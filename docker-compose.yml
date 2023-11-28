@@ -1,0 +1,22 @@
+version: '3.1'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/php-image
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html/RealmTech/auth
+
+  sql:
+    image: mariadb:10.6.15
+    environment:
+      MYSQL_ROOT_PASSWORD: Re4lmTech
+      MYSQL_DATABASE: chattonf01_db_realmtech_auth
+    ports:
+      - "3366:3306"
+    volumes:
+      - ./docker/sql:/docker-entrypoint-initdb.d
+    

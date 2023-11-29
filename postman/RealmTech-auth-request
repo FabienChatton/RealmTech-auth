@@ -1,0 +1,145 @@
+{
+	"info": {
+		"_postman_id": "febea827-1a05-4498-a5ac-226b9fb56946",
+		"name": "RealmTech-auth",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29683117"
+	},
+	"item": [
+		{
+			"name": "registerNewUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "amongus",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/RealmTech/auth/registerNewUser.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"RealmTech",
+						"auth",
+						"registerNewUser.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyPassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "testtt",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "testt",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/RealmTech/auth/verifyPassword.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"RealmTech",
+						"auth",
+						"verifyPassword.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hashPassword",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "password",
+							"value": "123",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/RealmTech/auth/hashPassword.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"RealmTech",
+						"auth",
+						"hashPassword.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyCode",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "code",
+							"value": "e8128619f1900895c0a08b7f2e0eda6cf622200e1c85113bd37e4e34c18e4a0c",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "amongus",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/RealmTech/auth/verifyCode.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"RealmTech",
+						"auth",
+						"verifyCode.php"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

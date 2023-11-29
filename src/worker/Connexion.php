@@ -16,7 +16,7 @@ class Connexion {
             $this->pdo = new PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
                 PDO::ATTR_PERSISTENT => true,
-                PDO::ATTR_ERRMODE => true,
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ));
         } catch (PDOException $e) {
             http_response_code(500);
@@ -47,7 +47,7 @@ class Connexion {
         $queryPrepared = $this->pdo->prepare($query);
         $queryPrepared->execute($params);
         $result = $queryPrepared->fetch();
-        if ($result == false) throw new PDOException("the response of the select query is false");
+        if ($result == false) throw new PDOException("Not found");
         return $result;
     }
 

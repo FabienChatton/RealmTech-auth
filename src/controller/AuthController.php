@@ -23,8 +23,13 @@ class AuthController {
             echo "ok";
             die();
         } catch (Exception $e) {
+            if (!strpos($e->getMessage(), "SQLSTATE[23000]: Integrity constraint violation: 1062")) {
+                http_response_code(400);
+                echo "A user with this username aleredy existe.";
+                die();
+            }
             http_response_code(500);
-            echo "The new user has an exception " . $e->getMessage();
+            echo $e->getMessage();
             die();
         }
     }
@@ -32,10 +37,8 @@ class AuthController {
     public function verify_password(string $username, string $password)
     {
         try {
-            $hashPassword = Connexion::getInstance()->selectQueryOne(
-                "SELECT password FROM T_User WHERE username = :username",
-                array("username" => $username)
-            )["password"];
+            $hashPassword = $this->passwordWrk->password_hash_get($username);
+
             if ($this->passwordWrk->verify_password($password, $hashPassword)) {
                 echo "ok";
                 die();

@@ -10,7 +10,7 @@ class CodeController {
         $this->codeWrk = new CodeWrk();
     }
 
-    public function verify_code($username, $code)
+    public function verify_code(string $username, string $code)
     {
         if ($this->codeWrk->verify_code($username, $code)) {
             echo "ok";
@@ -20,5 +20,12 @@ class CodeController {
             echo "code not valide";
             die();
         }
+    }
+
+    public function generate_code(string $username, string $passwordHash)
+    {
+        $code = $this->codeWrk->generate_code($username, $passwordHash);
+        echo $code;
+        die();
     }
 }

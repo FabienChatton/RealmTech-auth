@@ -28,7 +28,7 @@ try {
             echo "Username must have a length smaller or equals then 15.";
             die();
         }
-        if (!preg_match('/^[a-zA-z]{5,15}$/', $username)) {
+        if (!preg_match('/^[a-zA-z0-9]{5,15}$/', $username)) {
             http_response_code(400);
             echo "Username is not valide. Must contain only letter and be bigger or equals as 5 and smaller or equals as 15.";
             die();

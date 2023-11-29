@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "febea827-1a05-4498-a5ac-226b9fb56946",
+		"_postman_id": "c85f736c-84f1-4173-9d99-b16d4a12eac2",
 		"name": "RealmTech-auth",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "29683117"
+		"_exporter_id": "31495989"
 	},
 	"item": [
 		{
@@ -51,12 +51,12 @@
 					"urlencoded": [
 						{
 							"key": "username",
-							"value": "testtt",
+							"value": "amongus",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "testt",
+							"value": "123",
 							"type": "text"
 						}
 					]
@@ -107,6 +107,41 @@
 			"response": []
 		},
 		{
+			"name": "generateCode",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "passwordHash",
+							"value": "MoO3BiBlQubSE",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "amongus",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost/RealmTech/auth/generateCode.php",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"path": [
+						"RealmTech",
+						"auth",
+						"generateCode.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "verifyCode",
 			"request": {
 				"method": "POST",
@@ -116,7 +151,7 @@
 					"urlencoded": [
 						{
 							"key": "code",
-							"value": "e8128619f1900895c0a08b7f2e0eda6cf622200e1c85113bd37e4e34c18e4a0c",
+							"value": "1da11506e459bab67db287b46ba5b7d7102db0f6a50a5e07e9e595fa632d7ae3",
 							"type": "text"
 						},
 						{

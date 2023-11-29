@@ -23,11 +23,12 @@ CREATE TABLE IF NOT EXISTS `chattonf01_db_realmtech_auth`.`T_User` (
   `username` VARCHAR(15) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `email` VARCHAR(45) NULL,
-  `first_join` TIMESTAMP NOT NULL,
+  `created_at` TIMESTAMP NOT NULL,
+  `activated` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`PK_User`),
-  UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC) VISIBLE,
-  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
-  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
+  UNIQUE INDEX `uuid_UNIQUE` (`uuid` ASC),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC))
 ENGINE = InnoDB;
 
 USE `chattonf01_db_realmtech_auth`;
@@ -37,7 +38,7 @@ USE `chattonf01_db_realmtech_auth`$$
 CREATE DEFINER = CURRENT_USER TRIGGER `chattonf01_db_realmtech_auth`.`T_User_BEFORE_INSERT` BEFORE INSERT ON `T_User` FOR EACH ROW
 BEGIN
 SET NEW.uuid = uuid();
-SET NEW.first_join = now();
+SET NEW.created_at = now();
 END$$
 
 

@@ -15,6 +15,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Re4lmTech
       MYSQL_DATABASE: chattonf01_db_realmtech_auth
+    ports:
+      - "727:3306"
     volumes:
       - ./docker/sql:/docker-entrypoint-initdb.d
     

@@ -1,0 +1,2 @@
+<?
+const SALT = "MonSelDeRealmTech";

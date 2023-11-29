@@ -3,11 +3,13 @@ namespace controller;
 
 use Exception;
 use worker\Connexion;
+use worker\PasswordWrk;
 
 class AuthController {
+    private $passwordWrk;
 
     public function __construct() {
-        
+        $this->passwordWrk = new PasswordWrk();
     }
 
     public function register_new_user(string $username, string $password)
@@ -15,7 +17,7 @@ class AuthController {
         try {
             Connexion::getInstance()->executeQuery(
                 "INSERT INTO T_User (username, password) VALUES (:username, :password)",
-                array("username" => $username, "password" => password_hash($password, PASSWORD_DEFAULT))
+                array("username" => $username, "password" => $this->passwordWrk->hash_password($password))
             );
             http_response_code(200);
             echo "ok";
@@ -34,7 +36,7 @@ class AuthController {
                 "SELECT password FROM T_User WHERE username = :username",
                 array("username" => $username)
             )["password"];
-            if (password_verify($password, $hashPassword)) {
+            if ($this->passwordWrk->verify_password($password, $hashPassword)) {
                 echo "ok";
                 die();
             } else {
@@ -46,5 +48,11 @@ class AuthController {
             echo "The password can not be verified " . $e->getMessage();
             die();
         }
+    }
+
+    public function hash_password(string $password)
+    {
+        $hashPassword = $this->passwordWrk->hash_password($password);
+        echo $hashPassword;
     }
 }

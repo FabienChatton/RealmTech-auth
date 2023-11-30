@@ -19,7 +19,7 @@ class AuthController {
                 "INSERT INTO T_User (username, password) VALUES (:username, :password)",
                 array("username" => $username, "password" => $this->passwordWrk->hash_password($password))
             );
-            http_response_code(200);
+            http_response_code(201);
             echo "ok";
             die();
         } catch (Exception $e) {

@@ -2,6 +2,7 @@
 namespace controller;
 
 use Exception;
+use PDOException;
 use worker\Connexion;
 use worker\PasswordWrk;
 
@@ -38,11 +39,19 @@ class AccessTokenController {
     public function verify_access_token(string $username)
     {
         try {
-            // get access token
-            $accessToken = Connexion::getInstance()->selectQueryOne(
-                "SELECT access_token FROM T_User WHERE username = :username",
-                array("username" => $username)
-            )["access_token"];
+            $playerRecord = null;
+            try {
+                $playerRecord = Connexion::getInstance()->selectQueryOne(
+                    "SELECT access_token, uuid FROM T_User WHERE username = :username",
+                    array("username" => $username)
+                );
+            } catch (PDOException $e) {
+                http_response_code(404);
+                echo "Player $username don't existe";
+                die();
+            }
+            $accessToken = $playerRecord["access_token"];
+            $playerUuid = $playerRecord["uuid"];
 
             $this->invalidate_access_token($username);
 
@@ -53,7 +62,7 @@ class AccessTokenController {
                 echo "Access token not valide";
                 die();
             }
-            echo "access granted";
+            echo $playerUuid;
             die();
         } catch (Exception $e) {
             http_response_code(500);

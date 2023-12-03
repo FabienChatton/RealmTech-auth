@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `chattonf01_db_realmtech_auth`.`T_User` (
   `username` VARCHAR(15) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `email` VARCHAR(45) NULL,
-  `secrete` VARCHAR(150) NOT NULL,
+  `access_token` VARCHAR(150) NULL,
   `created_at` TIMESTAMP NOT NULL,
   `activated` TINYINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`PK_User`),

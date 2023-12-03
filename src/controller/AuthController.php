@@ -12,22 +12,24 @@ class AuthController {
         $this->passwordWrk = new PasswordWrk();
     }
 
-    public function register_new_user(string $username, string $password)
+    public function register_new_user(string $username, string $passwordHash, $email)
     {
         try {
-            Connexion::getInstance()->executeQuery(
-                "INSERT INTO T_User (username, password) VALUES (:username, :password)",
-                array("username" => $username, "password" => $this->passwordWrk->hash_password($password))
-            );
+            if ($email == null) {
+                Connexion::getInstance()->executeQuery(
+                    "INSERT INTO T_User (username, password) VALUES (:username, :password)",
+                    array("username" => $username, "password" => $passwordHash)
+                );
+            } else {
+                Connexion::getInstance()->executeQuery(
+                    "INSERT INTO T_User (username, password, email) VALUES (:username, :password, :email)",
+                    array("username" => $username, "password" => $passwordHash, "email" => $email)
+                );
+            }
             http_response_code(201);
             echo "ok";
             die();
         } catch (Exception $e) {
-            if (!strpos($e->getMessage(), "SQLSTATE[23000]: Integrity constraint violation: 1062")) {
-                http_response_code(400);
-                echo "A user with this username aleredy existe.";
-                die();
-            }
             http_response_code(500);
             echo $e->getMessage();
             die();
@@ -51,11 +53,5 @@ class AuthController {
             echo "The password can not be verified " . $e->getMessage();
             die();
         }
-    }
-
-    public function hash_password(string $password)
-    {
-        $hashPassword = $this->passwordWrk->hash_password($password);
-        echo $hashPassword;
     }
 }

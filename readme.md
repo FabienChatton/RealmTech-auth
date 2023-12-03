@@ -17,13 +17,11 @@ le client doit donner des informations secrets au serveur sur une connexion
 non sécurisée.
 
 ## implémentation de sécurité
-### code
-La méthode d'implémentation "code" propose d'utilisé d'utilisé un secret commun entre
-le client et le serveur d'authentification, une long chaîne de character généré à l'enregistrement (userSecrete).
-Le message est le nom d'utilisateur permettre de récupérer le secrete du l'utilisateur 
-afin de recalculer le code.
-Cette méthode est inspiré des Code d'authentification de message.
-[Wikipedia Code d'authentification de message](https://fr.wikipedia.org/wiki/Code_d%27authentification_de_message)
+### access token
+La méthode d'implémentation "access token" exploit que seul le client peut modifier
+la base de données. Le client va demander au serveur d'autentification de
+créer un jeton d'access temporaire (access token), puis le serveur de
+jeu va vérifié sur le jeton est valide.
 
 #### diagramme pour vérification de l’authenticité.
 ```mermaid
@@ -33,20 +31,19 @@ sequenceDiagram
     participant RealmTech-auth
     participant Database
 
-    RealmTech-client -)+ RealmTech-auth:  getCode(username, password)
+    RealmTech-client -)+ RealmTech-auth:  createToken(username, password)
     RealmTech-auth ->> Database: getPasswordHash(username)
     Database -->> RealmTech-auth: passwordHash
     RealmTech-auth ->> RealmTech-auth: verifyPassword(password, passwordHash)
-    RealmTech-auth ->> Database: getUserSecrete(username)
-    Database -->> RealmTech-auth: userSecrete
-    RealmTech-auth ->> RealmTech-auth: generateCode(username, secrete)
-    RealmTech-auth --)- RealmTech-client: code
-    RealmTech-client -)+ RealmTech-server: verifyCode(username, code)
-    RealmTech-server -)+ RealmTech-auth: verifyCode(username, code)
-    RealmTech-auth ->> Database: getUserSecrete(username)
-    Database -->> RealmTech-auth: userSecrete
-    RealmTech-auth ->> RealmTech-auth: generateCode(username, secrete)
-    RealmTech-auth ->> RealmTech-auth: compareCode(firstSecrete, secondeSecrete)
+    RealmTech-auth ->> RealmTech-auth: generateAccessToken()
+    RealmTech-auth ->> Database: saveAccessToken
+    RealmTech-auth --)- RealmTech-client: 200, ok
+    RealmTech-client -)+ RealmTech-server: demandeDeConnexion(username)
+    RealmTech-server -)+ RealmTech-auth: verifyToken(username)
+    RealmTech-auth ->> Database: getUserAcessToken(username)
+    Database -->> RealmTech-auth: accessToken
+    RealmTech-auth ->> RealmTech-auth: verifyToken
+    RealmTech-auth ->> Database: invalidateAccessToken()
     RealmTech-auth --)- RealmTech-server: accessGranted
     RealmTech-server --)- RealmTech-client: accessGranted
 ```
@@ -64,54 +61,9 @@ sequenceDiagram
     RealmTech-online -)+ RealmTech-auth: registerNewUser(username, password)
     RealmTech-auth ->> RealmTech-auth: usernameHasRequirement(username)
     RealmTech-auth ->> RealmTech-auth: hashPassword(password)
-    RealmTech-auth ->> RealmTech-auth: generateSecrete
-    RealmTech-auth ->> Database: insertNewUser(username, passwordHash, secrete)
+    RealmTech-auth ->> Database: insertNewUser(username, passwordHash)
     Database ->> Database: generateRandomUuid
     Database ->> Database: getTimestamp
     Database ->> Database: newUser
     RealmTech-auth --)+ RealmTech-online: 201, resource
-```
-
-
-un petit complément pour générer et vérifié le code.
-```mermaid
-flowchart
-    subgraph client
-        MessageClient[nom d'utilisateur]
-        HashClient[fonction de hachage]
-        CodeClient[CodeClient]
-        PasswordClient[secrete]
-    end
-    subgraph reseau
-        MessageReseau[nom d'utilisateur]
-        CodeReseau[CodeClient]
-    end
-    subgraph serveur
-        MessageServer[nom d'utilisateur]
-        HashServer[fonction de hachage]
-        CodeServer[CodeClient]
-        CodeServerClient[CodeServer]
-        PasswordServer[secrete]
-        CompareHash[compare code serveur code client]
-        Database
-    end
-
-    MessageClient --> MessageReseau
-    MessageClient --> HashClient
-    PasswordClient --> HashClient
-    HashClient --> CodeClient
-    CodeClient --> CodeReseau
-
-    CodeReseau --> CodeServer
-    MessageReseau --> MessageServer
-
-    PasswordServer --> HashServer
-    MessageServer --> HashServer
-    HashServer --> CodeServerClient
-    MessageServer --> Database
-    Database --> PasswordServer
-    
-    CodeServer --> CompareHash
-    CodeServerClient --> CompareHash
-
 ```

@@ -1,6 +1,6 @@
 <?
 
-use controller\CodeController;
+use controller\AccessTokenController;
 
 include_once("autoloader.php");
 
@@ -11,16 +11,10 @@ try {
             echo "Username in body is not set.";
             die();
         }
-        if (!isset($_POST["code"])) {
-            http_response_code(400);
-            echo "Code in body is not set.";
-            die();
-        }
         $username = $_POST["username"];
-        $code = $_POST["code"];
 
-        $codeController = new CodeController();
-        $codeController->verify_code($username, $code);
+        $accessTokenController = new AccessTokenController();
+        $accessTokenController->verify_access_token($username);
     }
 } catch (Exception $e) {
     http_response_code(500);

@@ -9,12 +9,12 @@ class PasswordWrk {
 
     public function hash_password(string $password)
     {
-        return crypt($password, SALT);
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public function verify_password(string $password, string $hashedPassword)
     {
-        return hash_equals($this->hash_password($password), $hashedPassword);
+        return password_verify($password, $hashedPassword);
     }
 
     public function password_hash_get(string $username): string
@@ -26,7 +26,7 @@ class PasswordWrk {
             )["password"];
             return $passwordHash;
         } catch (PDOException $e) {
-            http_response_code(404);
+            http_response_code(500);
             echo "Can not get password. " . $e->getMessage();
             die();
         }

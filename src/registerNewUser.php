@@ -4,6 +4,8 @@ use controller\AuthController;
 use helper\EmailRegex;
 use worker\PasswordWrk;
 
+const RESERVED_USERNAMES = ["amongus"];
+
 include_once("autoloader.php");
 
 try {
@@ -21,6 +23,11 @@ try {
         $username = $_POST["username"];
         $password = $_POST["password"];
         $email = $_POST["email"];
+        if (in_array($username, RESERVED_USERNAMES)) {
+            http_response_code(409);
+            echo "Can not use this username, is reserved, sorry";
+            die();
+        }
         if (strlen($username) < 5) {
             http_response_code(400);
             echo "Username must have a length bigger or equals then 5.";

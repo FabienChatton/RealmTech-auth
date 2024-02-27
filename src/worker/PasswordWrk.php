@@ -19,16 +19,10 @@ class PasswordWrk {
 
     public function password_hash_get(string $username): string
     {
-        try {
-            $passwordHash = Connexion::getInstance()->selectQueryOne(
-                "SELECT password FROM T_User WHERE username = :username",
-                array("username" => $username)
-            )["password"];
-            return $passwordHash;
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo "Can not get password. " . $e->getMessage();
-            die();
-        }
+        $passwordHash = Connexion::getInstance()->selectQueryOne(
+            "SELECT password FROM T_User WHERE username = :username",
+            array("username" => $username)
+        )["password"];
+        return $passwordHash;
     }
 }

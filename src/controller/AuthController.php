@@ -39,7 +39,13 @@ class AuthController {
     public function verify_password(string $username, string $password)
     {
         try {
-            $hashPassword = $this->passwordWrk->password_hash_get($username);
+            try {
+                $hashPassword = $this->passwordWrk->password_hash_get($username);
+            } catch (Exception $e) {
+                http_response_code(400);
+                echo "Player $username don't existe";
+                die();
+            }
 
             if ($this->passwordWrk->verify_password($password, $hashPassword)) {
                 echo "ok";
@@ -47,6 +53,7 @@ class AuthController {
             } else {
                 http_response_code(401);
                 echo "password is not correct";
+                die();
             }
         } catch (Exception $e) {
             http_response_code(500);

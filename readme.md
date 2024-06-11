@@ -41,11 +41,24 @@ sequenceDiagram
     RealmTech-client -)+ RealmTech-server: demandeDeConnexion(username)
     RealmTech-server -)+ RealmTech-auth: verifyToken(username)
     RealmTech-auth ->> Database: getUserAcessToken(username)
-    Database -->> RealmTech-auth: accessToken
-    RealmTech-auth ->> RealmTech-auth: verifyToken
-    RealmTech-auth ->> Database: invalidateAccessToken()
-    RealmTech-auth --)- RealmTech-server: accessGranted
-    RealmTech-server --)- RealmTech-client: accessGranted
+        alt player existe
+        Database -->> RealmTech-auth: accessToken
+        RealmTech-auth ->> RealmTech-auth: verifyToken
+        RealmTech-auth ->> Database: invalidateAccessToken()
+        alt valide token
+            note over RealmTech-auth, RealmTech-server: status 200
+            RealmTech-auth --)- RealmTech-server: playerUuid
+            RealmTech-server --)- RealmTech-client: playerUuid
+        else invalide token
+            note over RealmTech-auth, RealmTech-server: status 401
+            RealmTech-auth --) RealmTech-server: Access token not valide
+            RealmTech-server --) RealmTech-client: Access token not valide
+        end
+    else player not existe
+        note over RealmTech-auth, RealmTech-server: status 404
+            RealmTech-auth --) RealmTech-server: player not existe
+        RealmTech-server --) RealmTech-client: player not existe
+    end
 ```
 ## Création d'un compte
 La création d'un nouveau compte se fait sur un site internet (RealmTech-online), qui

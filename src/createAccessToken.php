@@ -18,9 +18,10 @@ try {
         }
         $username = $_POST["username"];
         $password = $_POST["password"];
+        $ephemeralName = $_POST["ephemeralName"];
         
         $accessTokenController = new AccessTokenController();
-        $accessTokenController->create_access_token($username, $password);
+        $accessTokenController->create_access_token($username, $password, $ephemeralName);
     }
 } catch (Exception $e) {
     http_response_code(500);

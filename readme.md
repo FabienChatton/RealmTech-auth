@@ -23,6 +23,18 @@ la base de données. Le client va demander au serveur d'autentification de
 créer un jeton d'access temporaire (access token), puis le serveur de
 jeu va vérifié sur le jeton est valide.
 
+Pour garentire que c'est le même joueur qui créer un token et qui demande
+la verification, le serveur renvoie un secret temporaire. Le client doit
+envoyer le secret temporaire au serveur de jeu. quand le secret est validé,
+c'est la garentie que c'est la même personne qui à créer le token et qui a
+demendé la vérification. Le secret temporaire est stoken dans le token (qui
+est lui même stoké dans la base de données).
+
+Le nom ephémère permet de garentire que le client se connecte au bon serveur.
+Pour verifié le token du client, le serveur sont nom ephémère. Si le nom
+ephémère corespond au nom dans le token, c'est que le client se connecte au bon
+serveur.
+
 #### diagramme pour vérification de l’authenticité.
 ```mermaid
 sequenceDiagram
@@ -31,19 +43,24 @@ sequenceDiagram
     participant RealmTech-auth
     participant Database
 
-    RealmTech-client -)+ RealmTech-auth:  createToken(username, password)
+    note over RealmTech-client: début onnexion client au serveur
+    RealmTech-client -)+ RealmTech-server: getInfos
+    RealmTech-server --)- RealmTech-client: infos (avec nom ephémère)
+
+    RealmTech-client -)+ RealmTech-auth: createToken(username, password, nom ephémère)
     RealmTech-auth ->> Database: getPasswordHash(username)
     Database -->> RealmTech-auth: passwordHash
     RealmTech-auth ->> RealmTech-auth: verifyPassword(password, passwordHash)
-    RealmTech-auth ->> RealmTech-auth: generateAccessToken()
+    RealmTech-auth ->> RealmTech-auth: generateAccessToken(nom ephémère)
     RealmTech-auth ->> Database: saveAccessToken
-    RealmTech-auth --)- RealmTech-client: 200, ok
-    RealmTech-client -)+ RealmTech-server: demandeDeConnexion(username)
-    RealmTech-server -)+ RealmTech-auth: verifyToken(username)
+    RealmTech-auth --)- RealmTech-client: 200, ok, secretClient
+    RealmTech-client -)+ RealmTech-server: demandeDeConnexion(username, secretClient)
+    RealmTech-server -)+ RealmTech-auth: verifyToken(username, secretClient)
     RealmTech-auth ->> Database: getUserAcessToken(username)
         alt player existe
         Database -->> RealmTech-auth: accessToken
-        RealmTech-auth ->> RealmTech-auth: verifyToken
+        RealmTech-auth ->> RealmTech-auth: sessionGetEphemeralName()
+        RealmTech-auth ->> RealmTech-auth: verifyToken(secretClient, nom ephémère)
         RealmTech-auth ->> Database: invalidateAccessToken()
         alt valide token
             note over RealmTech-auth, RealmTech-server: status 200
